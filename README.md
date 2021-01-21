@@ -11,4 +11,17 @@ sauf à le connecter sur la prise USB).
 On peut y connecter sur un bus one Wire jusqu'à 3 capteurs de température de types DS18B20
 Un capteur de type BME280 (SDA/SCL).
 Une configuration au travers d'un point d'accès WIFI est possible.
-Le mode sleep est géré mais c'est un module qui consomme et le système de charge solaire est recommendé.
+Le mode sleep est géré mais c'est un module qui consomme et le système de charge solaire est recommandé.
+
+## Librairies utilisées
+
+Adafruit BME280 Library
+Adafruit Unified Sensor
+DallasTemperature
+ESP8266 and ESP32 OLED driver for SSD1306 displays
+HX711
+IotWebConf
+MCCI Arduino Development Kit ADK
+MCCI Arduino LoRaWAN Library
+MCCI LoRaWAN LMIC library
+OneWire
