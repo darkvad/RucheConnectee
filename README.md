@@ -15,12 +15,12 @@ Le mode sleep est géré mais c'est un module qui consomme et le système de cha
 
 ## Librairies utilisées
 
-- mcci-catena/MCCI Arduino LoRaWAN Library@0.8.0
-- mcci-catena/MCCI LoRaWAN LMIC library@3.3.0
-- paulstoffregen/OneWire@2.3.5
-- adafruit/Adafruit BME280 Library@2.1.2
-- thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays@4.1.0
-- mcci-catena/MCCI Arduino Development Kit ADK@0.2.2
-- milesburton/DallasTemperature@3.9.1
-- prampec/IotWebConf@3.0.0
-- bogde/HX711@0.7.4
+- mcci-catena/MCCI Arduino LoRaWAN Library [ici](https://github.com/mcci-catena/arduino-lorawan)
+- mcci-catena/MCCI LoRaWAN LMIC library [ici](https://github.com/mcci-catena/arduino-lmic)
+- paulstoffregen/OneWire [ici](https://github.com/PaulStoffregen/OneWire)
+- adafruit/Adafruit BME280 Library [ici](https://github.com/adafruit/Adafruit_BME280_Library)
+- thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays [ici](https://github.com/ThingPulse/esp8266-oled-ssd1306)
+- mcci-catena/MCCI Arduino Development Kit ADK [ici](https://github.com/mcci-catena/Catena-mcciadk)
+- milesburton/DallasTemperature [ici](https://github.com/milesburton/Arduino-Temperature-Control-Library)
+- prampec/IotWebConf [ici](https://github.com/prampec/IotWebConf)
+- bogde/HX711 [ici](https://github.com/bogde/HX711)
