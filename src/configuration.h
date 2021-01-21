@@ -34,7 +34,7 @@ void ttn_register(void (*callback)(uint8_t message));
 // Version
 // -----------------------------------------------------------------------------
 
-#define APP_NAME                "TTGO-LoRa32-1"
+#define APP_NAME                "BeeConnect-LoRa32-1"
 #define APP_VERSION             "V1.0\n"
 
 // -----------------------------------------------------------------------------

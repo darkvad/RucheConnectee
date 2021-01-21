@@ -15,11 +15,24 @@
    If you have other time consuming code running (i.e. a graphical LCD), consider calling update() from an interrupt routine,
    see example file "Read_1x_load_cell_interrupt_driven.ino".
 
-   This is an example sketch on how to use this library
+   This is derived from an example sketch on how to use this library
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 */
-//#include <Arduino.h>
+
 #include "loadCell.h"
-//using namespace std;
 long t = 0;
 
 void load_setup() {
