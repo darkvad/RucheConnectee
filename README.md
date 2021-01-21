@@ -15,13 +15,12 @@ Le mode sleep est géré mais c'est un module qui consomme et le système de cha
 
 ## Librairies utilisées
 
-Adafruit BME280 Library
-Adafruit Unified Sensor
-DallasTemperature
-ESP8266 and ESP32 OLED driver for SSD1306 displays
-HX711
-IotWebConf
-MCCI Arduino Development Kit ADK
-MCCI Arduino LoRaWAN Library
-MCCI LoRaWAN LMIC library
-OneWire
+- mcci-catena/MCCI Arduino LoRaWAN Library@0.8.0
+- mcci-catena/MCCI LoRaWAN LMIC library@3.3.0
+- paulstoffregen/OneWire@2.3.5
+- adafruit/Adafruit BME280 Library@2.1.2
+- thingpulse/ESP8266 and ESP32 OLED driver for SSD1306 displays@4.1.0
+- mcci-catena/MCCI Arduino Development Kit ADK@0.2.2
+- milesburton/DallasTemperature@3.9.1
+- prampec/IotWebConf@3.0.0
+- bogde/HX711@0.7.4
