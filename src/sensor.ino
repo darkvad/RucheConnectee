@@ -18,6 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include "parametres.h"
+#include "frequency.h"
 
 #ifdef BMP280_ADDRESS
 #include <Adafruit_BME280.h>
@@ -78,6 +79,7 @@ void buildPacket(uint8_t txBuffer[21])
 {
   char buffer[40];
 
+  
   //
   // Relais
   //
@@ -92,7 +94,7 @@ void buildPacket(uint8_t txBuffer[21])
     txBuffer[0] = ( 00 ) & 0xFF;
     Serial.println("Relais = Off");
   }
-
+  
 #ifdef BMP280_ADDRESS
 if (bmp280_found) {
 
@@ -185,12 +187,14 @@ if (bmp280_found) {
 }
 #endif
 
+/* pour debug a supprimer et remplacer par frequence et amplitude
   // msg counter
   myCount.x = count;
   txBuffer[7] = myCount.dataArray[0];
   txBuffer[8] = myCount.dataArray[1];
   txBuffer[9] = myCount.dataArray[2];
   txBuffer[10] = myCount.dataArray[3];
+*/
 
 #if NB_DS18B20 > 0
 if (atoi(nb_DS18B20Value) > 0) {
@@ -243,5 +247,38 @@ if (atoi(nb_DS18B20Value) > 0) {
 
   txBuffer[19] = vbatLow;
   txBuffer[20] = vbatHigh;
+
+  // mesure frequence sonore
+  check_for_work = false;
+  work_finished = false;
+  frequency_setup();
+  //while(!work_finished);
+  Serial.println(work_finished);
+  delay(2000);
+  Serial.println(work_finished);
+  /*Multiply the magnitude at all other frequencies with (2/FFT_N) to obtain the amplitude at that frequency*/
+  sprintf(print_buf,"Frequence fondamentale : %f Hz\t Magnitude : %f \n", fundamental_freq, max_magnitude);
+  Serial.println(print_buf);
+
+  // adjust for the f2sflt16 range (-1 to 1)
+  fundamental_freq = fundamental_freq / 100000;
+  max_magnitude = max_magnitude / 1000;
+
+  // float -> int
+  uint16_t payloadFrequence = LMIC_f2sflt16(fundamental_freq);
+  uint16_t payloadMagnitude = LMIC_f2sflt16(max_magnitude);
+
+  // int -> bytes
+  byte frequenceLow = lowByte(payloadFrequence);
+  byte frequenceHigh = highByte(payloadFrequence);
+  byte magnitudeLow = lowByte(payloadMagnitude);
+  byte magnitudeHigh = highByte(payloadMagnitude);
+
+  txBuffer[7] = frequenceLow;
+  txBuffer[8] = frequenceHigh;
+  txBuffer[9] = magnitudeLow;
+  txBuffer[10] = magnitudeHigh;
+
+
 
 }

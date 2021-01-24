@@ -30,6 +30,7 @@
 #include <DallasTemperature.h>
 #include "function.h"
 #include "loadCell.h"
+#include "frequency.h"
 
 bool ssd1306_found = false;
 bool bmp280_found = false;
@@ -235,6 +236,7 @@ void setup() {
   DEBUG_PORT.begin(SERIAL_BAUD);
   #endif
   Serial.begin(115200);
+  while(!Serial);
 
 // Get the reason of reset
   reset_reason = esp_reset_reason();
@@ -285,6 +287,7 @@ void setup() {
 pinMode(BATTERY_PIN, INPUT);
 analogReadResolution(10);
 
+
 #ifdef BMP280_ADDRESS
 // Init BME280
 if (bmp280_found) {
@@ -302,6 +305,8 @@ if (atoi(nb_DS18B20Value) > 0) {
 load_setup();
 
 sendInterval = strtoul(sendIntervalValue,NULL,10);
+//sendInterval = 30000;
+//mode_sleep = false;
 
 // Show logo on first boot
   if (1 == count) {
@@ -323,6 +328,10 @@ sendInterval = strtoul(sendIntervalValue,NULL,10);
   ttn_join();
   ttn_sf(LORAWAN_SF);
   ttn_adr(LORAWAN_ADR);
+
+  xTaskCreate(complexHandler, "Handler Task", 8192, NULL, 1, &complexHandlerTask);
+
+
 }
 
 /*
