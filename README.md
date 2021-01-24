@@ -151,7 +151,7 @@ function sflt162f(rawSflt16)
 
 ### Schéma
 
-[embed]https://github.com/darkvad/RucheConnectee/blob/master/hardware/Schematic_LoraNodeRuche_2021-01-21.pdf[/embed]
+<embed>https://github.com/darkvad/RucheConnectee/blob/master/hardware/Schematic_LoraNodeRuche_2021-01-21.pdf</embed>
 
 ### PCB
 
