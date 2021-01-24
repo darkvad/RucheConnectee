@@ -149,4 +149,4 @@ function sflt162f(rawSflt16)
 
 ## Hardware
 
-https://github.com/darkvad/RucheConnectee/blob/master/hardware/PCB_PCB_2021-01-18_23-31-23_2021-01-21.png
+![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/PCB_PCB_2021-01-18_23-31-23_2021-01-21.png)
