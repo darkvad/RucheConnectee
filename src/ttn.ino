@@ -28,7 +28,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include <SPI.h>
 #include <vector>
 #include "configuration.h"
-#include "credentials.h"
+#include "secrets/credentials.h"
 
 // -----------------------------------------------------------------------------
 // Globals

@@ -30,7 +30,7 @@
 #include <stdio.h>
 #include "parametres.h"
 #include "configuration.h"
-#include "credentials.h"
+#include "secrets/credentials.h"
 
 // -- Initial name of the Thing. Used e.g. as SSID of the own Access Point.
 const char thingName[] = "testThing";

@@ -22,7 +22,7 @@
 */
 
 #include "configuration.h"
-#include "credentials.h"
+#include "secrets/credentials.h"
 #include "rom/rtc.h"
 #include <Wire.h>
 #include <OneWire.h>
