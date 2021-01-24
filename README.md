@@ -146,3 +146,13 @@ function sflt162f(rawSflt16)
 	return f_unscaled;
 	}
 ```
+
+## Hardware
+
+### Schéma
+
+![schema](https://github.com/darkvad/RucheConnectee/blob/master/hardware/Schematic_LoraNodeRuche_2021-01-21.pdf)
+
+### PCB
+
+![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/PCB_PCB_2021-01-18_23-31-23_2021-01-21.png)
