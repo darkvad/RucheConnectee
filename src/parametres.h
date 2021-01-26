@@ -31,5 +31,7 @@ char objectIDValue[STRING_LEN];
 char rucherValue[STRING_LEN];
 char rucheValue[STRING_LEN];
 char sleepValue[STRING_LEN];
+char offsetValue[NUMBER_LEN];
+char calibrationValue[NUMBER_LEN];
 
 #endif

@@ -35,6 +35,42 @@ DeviceAddress mySensors[3] = {TEMP_SENSOR_1, TEMP_SENSOR_2, TEMP_SENSOR_3};
 // Pass our oneWire reference to Dallas Temperature sensor 
 DallasTemperature sensors(&oneWire);
 
+// arrays to hold device address
+DeviceAddress Thermometer;
+
+// function to print a device address
+void printAddress(DeviceAddress deviceAddress)
+{
+  for (uint8_t i = 0; i < 8; i++)
+  {
+    if (deviceAddress[i] < 16) Serial.print("0");
+    Serial.print(deviceAddress[i], HEX);
+  }
+}
+
+void findDevices(char ident[17],int pin)
+{
+  Serial.print("Locating devices...");
+  sensors.begin();
+  Serial.print("Found ");
+  Serial.print(sensors.getDeviceCount(), DEC);
+  Serial.println(" devices.");
+
+  if (!sensors.getAddress(Thermometer, 0)) Serial.println("Unable to find address for Device 0"); 
+  // show the addresses we found on the bus
+  Serial.print("Device 0 Address: ");
+  printAddress(Thermometer);
+  Serial.println();
+  for (uint8_t i = 0; i < 8; i++)
+  {
+    if (Thermometer[i] < 16) Serial.print("0");
+    Serial.print(Thermometer[i], HEX);
+    sprintf(&ident[i*2],"%02x",Thermometer[i]);
+  }
+  
+}
+
+
 void ds18b20_setup(void){
   //Serial.begin(115200);
   sensors.begin();
@@ -51,7 +87,7 @@ void getTemp(uint8_t txBuffer[21]) {
   Serial.print("Requesting temperatures...");
   sensors.requestTemperatures(); // Send the command to get temperatures
   Serial.println("DONE");
-
+  
   for (int i = 0; i < atoi(nb_DS18B20Value); i++) {
 
     float temperature = sensors.getTempC(mySensors[i]);

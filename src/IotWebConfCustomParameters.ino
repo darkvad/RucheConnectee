@@ -28,21 +28,23 @@
 #include <IotWebConf.h>
 #include <IotWebConfUsing.h> // This loads aliases for easier class names.
 #include <stdio.h>
+#include <string>
 #include "parametres.h"
 #include "configuration.h"
 #include "secrets/credentials.h"
+#include "function.h"
 
 // -- Initial name of the Thing. Used e.g. as SSID of the own Access Point.
-const char thingName[] = "testThing";
+const char thingName[] = "BeeConnect";
 
 // -- Initial password to connect to the Thing, when it creates an own Access Point.
-const char wifiInitialApPassword[] = "alain2505";
+const char wifiInitialApPassword[] = "bzzzzz";
 
 #define STRING_LEN 128
 #define NUMBER_LEN 32
 
 // -- Configuration specific key. The value should be modified if config structure was changed.
-#define CONFIG_VERSION "alainT03"
+#define CONFIG_VERSION "alainT04"
 
 // -- When CONFIG_PIN is pulled to ground on startup, the Thing will use the initial
 //      password to buld an AP. (E.g. in case of lost password)
@@ -85,6 +87,8 @@ u4_t defaultUintValueObjectID = DEVADDR;
 char defaultValueObjectID[NUMBER_LEN];
 char defaultValueRucher[STRING_LEN] = "Mon Rucher";
 char defaultValueRuche[STRING_LEN] = "Ruche 01";
+char defaultValueOffset[NUMBER_LEN];
+char defaultValueCalibration[NUMBER_LEN];
 
 static char selectBMP280Values[][NUMBER_LEN] = { "0", "118", "119" };
 static char selectBMP280Names[][STRING_LEN] = { "Aucun", "0x76", "0x77" };
@@ -122,6 +126,9 @@ IotWebConfNumberParameter nb_DS18B20 = IotWebConfNumberParameter("Nombre de capt
 IotWebConfTextParameter tempSensor1 = IotWebConfTextParameter("Id capteur 1", "tempSensor1", tempSensorsValues[0], STRING_LEN, defaultValueTempSensor1);
 IotWebConfTextParameter tempSensor2 = IotWebConfTextParameter("Id capteur 2", "tempSensor2", tempSensorsValues[1], STRING_LEN, defaultValueTempSensor2);
 IotWebConfTextParameter tempSensor3 = IotWebConfTextParameter("Id capteur 3", "tempSensor3", tempSensorsValues[2], STRING_LEN, defaultValueTempSensor3);
+IotWebConfNumberParameter offset = IotWebConfNumberParameter("Offset balance", "offset", offsetValue, NUMBER_LEN, "-8301", "...", "min='-50000' max='50000' step='0.01'");
+IotWebConfNumberParameter calibration = IotWebConfNumberParameter("Calibration balance", "calibration", calibrationValue, NUMBER_LEN, "-52.83", "...", "min='-50000' max='50000' step='0.01'");
+
 
 uint8_t* convertchartouint8array(char chaine[],uint8_t len,uint8_t* resultat) {
   char temp[3];
@@ -180,6 +187,8 @@ void iotwebconf_setup()
   capteurs.addItem(&tempSensor1);
   capteurs.addItem(&tempSensor2);
   capteurs.addItem(&tempSensor3);
+  capteurs.addItem(&offset);
+  capteurs.addItem(&calibration);
 
   iotWebConf.setStatusPin(STATUS_PIN);
   //iotWebConf.setConfigPin(CONFIG_PIN);
@@ -195,6 +204,10 @@ void iotwebconf_setup()
 
   // -- Set up required URL handlers on the web server.
   server.on("/", handleRoot);
+  server.on("/identify", handleOneWire);
+  server.on("/balance", handleBalance);
+  server.on("/tare", handleTare);
+  server.on("/calibrate", handleCalibrate);
   server.on("/config", []{ iotWebConf.handleConfig(); });
   server.onNotFound([](){ iotWebConf.handleNotFound(); });
 
@@ -208,6 +221,108 @@ void iotwebconf_loop()
 }
 
 /**
+ * Handle web requests to "/identify" path.
+ */
+void handleOneWire()
+{
+  // -- Let IotWebConf test and handle captive portal requests.
+  if (iotWebConf.handleCaptivePortal())
+  {
+    // -- Captive portal request were already served.
+    return;
+  }
+  char device[17];
+  findDevices(device,ONE_WIRE_BUS);
+  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s += "<title>Identification DS18B20</title></head><body><H1>DS18B20</H1>";
+  s += "<p>Premier device trouv&eacute : ";
+  s += device;
+  s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
+  s += "Aller &agrave; la <a href='config'>page de configuration</a> to change values.";
+  s += "</body></html>\n";
+
+  server.send(200, "text/html", s);
+}
+
+/**
+ * Handle web requests to "/balance" path.
+ */
+void handleBalance()
+{
+  // -- Let IotWebConf test and handle captive portal requests.
+  if (iotWebConf.handleCaptivePortal())
+  {
+    // -- Captive portal request were already served.
+    return;
+  }
+  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s += "<title>R&eacute;glages Balance</title></head><body><H1>BALANCE</H1>";
+  s += "<p>Commencer par faire la tare : ";
+  s += "<a href='tare'>TARE</a>.";
+  s += "<p>Puis la calibration apr&egrave;s avoir indiqu&eacute; le poids connu : ";
+  s += "<form action=\"calibrate\" method=\"get\">";
+  s += "<label for=\"poids\">Poids mis (gr): </label><input type=\"number\" name=\"poids\" id=\"poids\" min=\"0\" max=\"50000\"><br><input type=\"submit\" value=\"Calibrer\"></form><br>";
+  s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
+  s += "Aller &agrave; la <a href='config'>page de configuration</a> to change values.";
+  s += "</body></html>\n";
+
+  server.send(200, "text/html", s);
+}
+
+/**
+ * Handle web requests to "/identify" path.
+ */
+void handleTare()
+{
+  // -- Let IotWebConf test and handle captive portal requests.
+  if (iotWebConf.handleCaptivePortal())
+  {
+    // -- Captive portal request were already served.
+    return;
+  }
+  float valtare;
+  valtare = procTare();
+  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s += "<title>Tare Balance</title></head><body><H1>TARE</H1>";
+  s += "<p>Valeur de l'offset &agrave; copier dans la configuration : ";
+  s += valtare;
+  s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
+  s += "Aller &agrave; la <a href='config'>page de configuration</a> to change values.";
+  s += "</body></html>\n";
+
+  server.send(200, "text/html", s);
+}
+
+/**
+ * Handle web requests to "/identify" path.
+ */
+void handleCalibrate()
+{
+  // -- Let IotWebConf test and handle captive portal requests.
+  if (iotWebConf.handleCaptivePortal())
+  {
+    // -- Captive portal request were already served.
+    return;
+  }
+  
+  //Serial.println("parametres recu ?");
+  //Serial.println(server.arg("poids"));
+
+  float valcal;
+  valcal = procCalibration(server.arg("poids").toInt());
+  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s += "<title>Calibration Balance</title></head><body><H1>CALIBRATION</H1>";
+  s += "<p>Valeur de calibration &agrave; copier dans la configuration: ";
+  s += valcal;
+  s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
+  s += "Aller &agrave; la <a href='config'>page de configuration</a> to change values.";
+  s += "</body></html>\n";
+
+  server.send(200, "text/html", s);
+}
+
+
+/**
  * Handle web requests to "/" path.
  */
 void handleRoot()
@@ -219,33 +334,41 @@ void handleRoot()
     return;
   }
   String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-  s += "<title>IotWebConf Parameters</title></head><body>CONFIGURATION";
-  s += "<ul>";
-  s += "<li>singleChannelGatewayValue: ";
+  s += "<title>Param&egrave;tre BeeConnect</title></head><body><H1>CONFIGURATION</H1>";
+  s += "<H2>G&eacute;n&eacute;raux</H2><ul>";
+  s += "<li>Canal pour gateway monocanal : ";
   s += atoi(singleChannelGatewayValue);
-  s += "<li>Mode sleep: ";
+  s += "<li>Mode veille : ";
   s += sleepParam.isChecked();
-  s += "<li>Time between messages: ";
+  s += "<li>D&eacute;lai entre message : ";
   s += strtoul(sendIntervalValue,NULL,10);
-  s += "<li>Altitude: ";
+  s += "<li>Altitude ruche : ";
   s += strtoul(altitudeValue,NULL,10);
   s += "</ul>";
   s += "<hr/>";
+  s += "<H2>Configuration Capteurs</H2>";
   s += "<ul>";
-  s += "<li>BMP280Value: ";
+  s += "<li>Adresse BME/BMP 280 : ";
   s += atoi(BMP280Value);
-  s += "<li>nb_DS18B20Value: ";
+  s += "<li>Nombre de DS18B20 : ";
   s += atoi(nb_DS18B20Value);
-  s += "<li>tempSensorsValues: ";
-//  s += checkboxParam.isChecked();
-  s += "<li>1: ";
+  s += "<li>Identifiants capteurs de temp&eacute;rature: ";
+  s += "<li>1 : ";
   s += tempSensorsValues[0];
-  s += "<li>2: ";
+  s += "<li>2 : ";
   s += tempSensorsValues[1];
-  s += "<li>3: ";
+  s += "<li>3 : ";
   s += tempSensorsValues[2];
-  s += "</ul>";
-  s += "Go to <a href='config'>configure page</a> to change values.";
+  s += "</ul><HR><H2>Configuration Balance</H2>";
+  s += "<ul>";
+  s += "<li>Offset balance (tare) : ";
+  s += ((String)offsetValue).toFloat();
+  s += "<li>Calibration balance : ";
+  s += ((String)calibrationValue).toFloat();;
+  s += "</ul><HR>";
+  s += "Aller &agrave; la <a href='config'>page de configuration</a> pour changer les valeurs.<br>";
+  s += "Aller &agrave; la <a href='identify'>page DS18B20</a> pour trouver les identifiants des capteurs DS18B20<br>";
+  s += "Aller &agrave; la <a href='balance'>page balance</a> pour trouve rles valeurs de tare et de calibration.<br>";
   s += "</body></html>\n";
 
   server.send(200, "text/html", s);

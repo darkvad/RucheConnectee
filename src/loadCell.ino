@@ -33,7 +33,24 @@
 */
 
 #include "loadCell.h"
+#include "parametres.h"
+
 long t = 0;
+
+float procCalibration(int knownWeight) {
+  LoadCell.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+  LoadCell.power_up();
+  LoadCell.set_scale();
+  float mesure = LoadCell.get_units(10);
+  return mesure / knownWeight;
+}
+
+float procTare() {
+  LoadCell.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
+  LoadCell.power_up();
+  LoadCell.tare();
+  return LoadCell.get_offset();  
+}
 
 void load_setup() {
   //Serial.begin(115200); delay(10);
@@ -41,16 +58,18 @@ void load_setup() {
   Serial.println("Starting...");
 
   LoadCell.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
-  float calibrationValue; // calibration value (see example file "Calibration.ino")
-  calibrationValue = -52.83; // uncomment this if you want to set the calibration value in the sketch
-  float offset; // valeur de la tare
-  offset = -8301;
+  float wk_calibrationValue; // calibration value (see example file "Calibration.ino")
+  //wk_calibrationValue = -52.83; // uncomment this if you want to set the calibration value in the sketch
+  wk_calibrationValue = ((String)calibrationValue).toFloat(); // uncomment this if you want to set the calibration value in the sketch
+  float wk_offset; // valeur de la tare
+  //wk_offset = -8301;
+  wk_offset = ((String)offsetValue).toFloat();
   
   LoadCell.power_up();
 
   if (LoadCell.wait_ready_timeout(1000)) {
-    LoadCell.set_scale(calibrationValue);
-    LoadCell.set_offset(offset);
+    LoadCell.set_scale(wk_calibrationValue);
+    LoadCell.set_offset(wk_offset);
     Serial.println("Startup is complete");
   } else {
     Serial.println("HX711 not found.");

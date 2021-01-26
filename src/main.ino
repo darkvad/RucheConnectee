@@ -62,6 +62,7 @@ char tmpbuf[20];
 // Application
 // -----------------------------------------------------------------------------
 
+
 void send() {
   buildPacket(txBuffer);
 
@@ -260,10 +261,17 @@ void setup() {
   iotwebconf_setup();
 
 // recherche mode sleep dans la conf
-  if (sleepValue == NULL) {
-    mode_sleep = false;
-   } else {
+Serial.println("sleepValue");
+Serial.print(sleepValue);
+Serial.println("---");
+Serial.println("atoi(sleepValue)");
+Serial.println(atoi(sleepValue));
+  if (strcmp(sleepValue, "selected") == 0) {
+    Serial.println("mode sleep");
     mode_sleep = true;
+   } else {
+    mode_sleep = false;
+    Serial.println("PAS mode sleep");
    }
 
 // recheche node ID dans la conf
@@ -362,7 +370,7 @@ void loop() {
   }
 
   if (!mode_sleep || keepAP) {
-    Serial.println("iotwebconf loop");
+    //Serial.println("iotwebconf loop");
     iotwebconf_loop();
   } 
 
