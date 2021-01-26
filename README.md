@@ -147,6 +147,21 @@ function sflt162f(rawSflt16)
 	}
 ```
 
+## Configuration par interface web
+
+Le système démarre un Acces Point wifi, soit pendant 60s au reset si le mode veille est actif, soit indéfiniment.
+En se connectant à ce point d'accès et en accédant avec un navitateur à l'adresse http://192.168.4.1 on arrive sur la page d'affichage de l'état de la configuration qui va permettre de personnaliser l'objet connecté et aussi de rechercher les identifiants des capteurs DS18B20 ainsi que la tare et la calibration de la balance.
+
+Ci dessous les copies d'écran de l'interface de configuration.
+
+![Status](https://github.com/darkvad/RucheConnectee/blob/master/images/status.PNG)
+![DS18B20](https://github.com/darkvad/RucheConnectee/blob/master/images/ds18B20.PNG)
+![Balance](https://github.com/darkvad/RucheConnectee/blob/master/images/balance.PNG)
+![Tare](https://github.com/darkvad/RucheConnectee/blob/master/images/tare.PNG)
+![Calibration](https://github.com/darkvad/RucheConnectee/blob/master/images/calibration.PNG)
+![Configuration_1](https://github.com/darkvad/RucheConnectee/blob/master/images/config1.PNG)
+![Configuration_2](https://github.com/darkvad/RucheConnectee/blob/master/images/config2.PNG)
+
 ## Hardware
 
 ### Schéma
