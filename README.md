@@ -154,13 +154,13 @@ En se connectant à ce point d'accès et en accédant avec un navitateur à l'ad
 
 Ci dessous les copies d'écran de l'interface de configuration.
 
-![Status](https://https://github.com/darkvad/RucheConnectee/blob/master/images/status.PNG)
-![DS18B20](https://https://github.com/darkvad/RucheConnectee/blob/master/images/ds18B20.PNG)
-![Balance](https://https://github.com/darkvad/RucheConnectee/blob/master/images/balance.PNG)
-![Tare](https://https://github.com/darkvad/RucheConnectee/blob/master/images/tare.PNG)
-![Calibration](https://https://github.com/darkvad/RucheConnectee/blob/master/images/calibration.PNG)
-![Configuration_1](https://https://github.com/darkvad/RucheConnectee/blob/master/images/config1.PNG)
-![Configuration_2](https://https://github.com/darkvad/RucheConnectee/blob/master/images/config2.PNG)
+![Status](https://github.com/darkvad/RucheConnectee/blob/master/images/status.PNG)
+![DS18B20](https://github.com/darkvad/RucheConnectee/blob/master/images/ds18B20.PNG)
+![Balance](https://github.com/darkvad/RucheConnectee/blob/master/images/balance.PNG)
+![Tare](https://github.com/darkvad/RucheConnectee/blob/master/images/tare.PNG)
+![Calibration](https://github.com/darkvad/RucheConnectee/blob/master/images/calibration.PNG)
+![Configuration_1](https://github.com/darkvad/RucheConnectee/blob/master/images/config1.PNG)
+![Configuration_2](https://github.com/darkvad/RucheConnectee/blob/master/images/config2.PNG)
 
 ## Hardware
 
