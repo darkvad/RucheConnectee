@@ -1,3 +1,5 @@
+:warning: Attention il s'agit d'un travail en cours :exclamation:
+
 # Ruches connectées
 
 Ce projet a pour intention de créer un système de ruches connectées permettant de remonter des mesures
