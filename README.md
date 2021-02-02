@@ -41,10 +41,10 @@ Ces valeurs sont des #define dans les fichiers suivants et sont commentées dans
 
 Par ailleurs, certains define peuvent être redefini dans le fichier platformio.ini
 
-il est conceillé de builder avec le mode sleep désactivé :
+il est conseillé de builder avec le mode sleep désactivé :
 ``` #define SLEEP_BETWEEN_MESSAGES  0           // Do sleep between messages ```
-afin de permettre d'avoir le temps pour effectuer la configuration par le web (adresses périphériques, tare, calibration, ...) et ensuite activer avec l'intreface web le mode sleep.
-Lorsque le mode sleep est activé, le point d'accès web n'est disponible que pendant 60 secondes, largement nécessaireà se connecter pour désactiver le mode sleep pour faire plus de configuration ensuite après le reboot.
+afin de permettre d'avoir le temps pour effectuer la configuration par le web (adresses périphériques, tare, calibration, ...) et ensuite activer avec l'interface web le mode sleep.
+Lorsque le mode sleep est activé, le point d'accès web n'est disponible que pendant 60 secondes, largement nécessaire à se connecter pour désactiver le mode sleep pour faire plus de configuration ensuite après le reboot.
 
 
 ## Lora Stack (TTN ou The Things Stack V3)
