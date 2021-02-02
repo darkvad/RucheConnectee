@@ -2,7 +2,7 @@
 
 # Ruches connectées
 
-![](https://github.com/darkvad/RucheConnectee/blob/master/hardware/pcb_red.jpg)
+![](https://github.com/darkvad/RucheConnectee/blob/master/hardware/montage_red.jpg)
 
 Ce projet a pour intention de créer un système de ruches connectées permettant de remonter des mesures
 vers une stack LoraWan.
