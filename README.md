@@ -173,4 +173,4 @@ Ci dessous les copies d'écran de l'interface de configuration.
 ### PCB
 
 ![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/PCB_PCB_2021-01-18_23-31-23_2021-01-21.png)
-![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/pcb.jpg)
+![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/pcb_red.jpg)
