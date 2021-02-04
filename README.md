@@ -1,4 +1,8 @@
+:warning: Attention il s'agit d'un travail en cours :exclamation:
+
 # Ruches connectées
+
+![](https://github.com/darkvad/RucheConnectee/blob/master/hardware/montage_red.jpg)
 
 Ce projet a pour intention de créer un système de ruches connectées permettant de remonter des mesures
 vers une stack LoraWan.
@@ -25,6 +29,25 @@ Le mode sleep est géré mais c'est un module qui consomme et le système de cha
 - milesburton/DallasTemperature [ici](https://github.com/milesburton/Arduino-Temperature-Control-Library)
 - prampec/IotWebConf [ici](https://github.com/prampec/IotWebConf)
 - bogde/HX711 [ici](https://github.com/bogde/HX711)
+
+## Build
+
+Avant de buider votre projet (ici configuré pour PlatformIO), il faut configurer certaines valeurs pour le personnaliser.
+Ces valeurs sont des #define dans les fichiers suivants et sont commentées dans les fichiers sources.
+
+- configuration.h : Il s'agit de la configuration du mode de fonctionnement et aussi des affectations de pin.
+- credential.h : tout ce qui concerne les information privée LoraWan
+- frequency.h : port analogique (ADC) ou est connecté le micro
+- lmic_project_config.h : bien lire les indication qui demandent de changer le fichier de le librairie
+- loadCell.h : configuration des pins ou est branché le hx711
+
+Par ailleurs, certains define peuvent être redefini dans le fichier platformio.ini
+
+il est conseillé de builder avec le mode sleep désactivé :
+``` #define SLEEP_BETWEEN_MESSAGES  0           // Do sleep between messages ```
+afin de permettre d'avoir le temps pour effectuer la configuration par le web (adresses périphériques, tare, calibration, ...) et ensuite activer avec l'interface web le mode sleep.
+Lorsque le mode sleep est activé, le point d'accès web n'est disponible que pendant 60 secondes, largement nécessaire à se connecter pour désactiver le mode sleep pour faire plus de configuration ensuite après le reboot.
+
 
 ## Lora Stack (TTN ou The Things Stack V3)
 
@@ -171,3 +194,4 @@ Ci dessous les copies d'écran de l'interface de configuration.
 ### PCB
 
 ![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/PCB_PCB_2021-01-18_23-31-23_2021-01-21.png)
+![PCB](https://github.com/darkvad/RucheConnectee/blob/master/hardware/pcb_red.jpg)
