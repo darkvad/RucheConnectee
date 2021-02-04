@@ -29,13 +29,15 @@
 #include <IotWebConfUsing.h> // This loads aliases for easier class names.
 #include <stdio.h>
 #include <string>
+#include <SPIFFS.h>
 #include "parametres.h"
 #include "configuration.h"
 #include "secrets/credentials.h"
 #include "function.h"
+#include "style.h"
 
 // -- Initial name of the Thing. Used e.g. as SSID of the own Access Point.
-const char thingName[] = "BeeConnect";
+const char thingName[] = "BeeConn";
 
 // -- Initial password to connect to the Thing, when it creates an own Access Point.
 const char wifiInitialApPassword[] = "bzzzzz";
@@ -44,7 +46,7 @@ const char wifiInitialApPassword[] = "bzzzzz";
 #define NUMBER_LEN 32
 
 // -- Configuration specific key. The value should be modified if config structure was changed.
-#define CONFIG_VERSION "alainT04"
+#define CONFIG_VERSION "conf_01"
 
 // -- When CONFIG_PIN is pulled to ground on startup, the Thing will use the initial
 //      password to buld an AP. (E.g. in case of lost password)
@@ -157,6 +159,24 @@ char *convert_uint8tochar(uint8_t tableau[], uint8_t len, char* resultat) {
    return resultat;
 }
 
+class CustomHtmlFormatProvider : public iotwebconf::HtmlFormatProvider
+{
+public:
+  String getHeadExtension() { 
+    return "<style>" + String(FPSTR(style)) + "</style>"; 
+  }
+
+protected:
+  String getBodyInner() override
+  {
+    return
+      String(FPSTR(CUSTOMHTML_BODY_INNER)) +
+      HtmlFormatProvider::getBodyInner();
+  }
+  
+};
+// -- An instance must be created from the class defined above.
+CustomHtmlFormatProvider customHtmlFormatProvider;
 
 void iotwebconf_setup() 
 {
@@ -199,6 +219,7 @@ void iotwebconf_setup()
   iotWebConf.setFormValidator(&formValidator);
   iotWebConf.getApTimeoutParameter()->visible = true;
 
+  iotWebConf.setHtmlFormatProvider(&customHtmlFormatProvider);
   // -- Initializing the configuration.
   iotWebConf.init();
 
@@ -209,6 +230,7 @@ void iotwebconf_setup()
   server.on("/tare", handleTare);
   server.on("/calibrate", handleCalibrate);
   server.on("/config", []{ iotWebConf.handleConfig(); });
+  
   server.onNotFound([](){ iotWebConf.handleNotFound(); });
 
   Serial.println("Ready.");
@@ -234,7 +256,11 @@ void handleOneWire()
   char device[17];
   findDevices(device,ONE_WIRE_BUS);
   String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-  s += "<title>Identification DS18B20</title></head><body><H1>DS18B20</H1>";
+  s += "<title>Identification DS18B20</title><style>";
+  s += style;
+  s += "</style></head><body>";
+  s += String(FPSTR(CUSTOMHTML_BODY_INNER));
+  s += "<H1>DS18B20</H1>";
   s += "<p>Premier device trouv&eacute : ";
   s += device;
   s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
@@ -256,7 +282,11 @@ void handleBalance()
     return;
   }
   String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-  s += "<title>R&eacute;glages Balance</title></head><body><H1>BALANCE</H1>";
+  s += "<title>R&eacute;glages Balance</title><style>";
+  s += style;
+  s += "</style></head><body>";
+  s += String(FPSTR(CUSTOMHTML_BODY_INNER));
+  s += "<H1>BALANCE</H1>";
   s += "<p>Commencer par faire la tare : ";
   s += "<a href='tare'>TARE</a>.";
   s += "<p>Puis la calibration apr&egrave;s avoir indiqu&eacute; le poids connu : ";
@@ -283,7 +313,11 @@ void handleTare()
   float valtare;
   valtare = procTare();
   String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-  s += "<title>Tare Balance</title></head><body><H1>TARE</H1>";
+  s += "<title>Tare Balance</title><style>";
+  s += style;
+  s += "</style></head><body>";
+  s += String(FPSTR(CUSTOMHTML_BODY_INNER));
+  s += "<H1>TARE</H1>";
   s += "<p>Valeur de l'offset &agrave; copier dans la configuration : ";
   s += valtare;
   s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
@@ -311,7 +345,11 @@ void handleCalibrate()
   float valcal;
   valcal = procCalibration(server.arg("poids").toInt());
   String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-  s += "<title>Calibration Balance</title></head><body><H1>CALIBRATION</H1>";
+  s += "<title>Calibration Balance</title><style>";
+  s += style;
+  s += "</style></head><body>";
+  s += String(FPSTR(CUSTOMHTML_BODY_INNER));
+  s += "<H1>CALIBRATION</H1>";
   s += "<p>Valeur de calibration &agrave; copier dans la configuration: ";
   s += valcal;
   s += "<br></p>Aller &agrave; la <a href='/'>page d'&eacutetat</a>.<br>";
@@ -334,7 +372,11 @@ void handleRoot()
     return;
   }
   String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
-  s += "<title>Param&egrave;tre BeeConnect</title></head><body><H1>CONFIGURATION</H1>";
+  s += "<title>Param&egrave;tre BeeConnect</title><style>";
+  s += String(FPSTR(style));
+  s += "</style></head><body>";
+  s += String(FPSTR(CUSTOMHTML_BODY_INNER));
+  s += "<H1>CONFIGURATION</H1>";
   s += "<H2>G&eacute;n&eacute;raux</H2><ul>";
   s += "<li>Canal pour gateway monocanal : ";
   s += atoi(singleChannelGatewayValue);
@@ -342,6 +384,12 @@ void handleRoot()
   s += sleepParam.isChecked();
   s += "<li>D&eacute;lai entre message : ";
   s += strtoul(sendIntervalValue,NULL,10);
+  s += "<li>Object ID : ";
+  s += atoi(objectIDValue);
+  s += "<li>Rucher : ";
+  s += rucherValue;
+  s += "<li>Ruche : ";
+  s += rucheValue;
   s += "<li>Altitude ruche : ";
   s += strtoul(altitudeValue,NULL,10);
   s += "</ul>";
@@ -368,7 +416,7 @@ void handleRoot()
   s += "</ul><HR>";
   s += "Aller &agrave; la <a href='config'>page de configuration</a> pour changer les valeurs.<br>";
   s += "Aller &agrave; la <a href='identify'>page DS18B20</a> pour trouver les identifiants des capteurs DS18B20<br>";
-  s += "Aller &agrave; la <a href='balance'>page balance</a> pour trouve rles valeurs de tare et de calibration.<br>";
+  s += "Aller &agrave; la <a href='balance'>page balance</a> pour trouver les valeurs de tare et de calibration.<br>";
   s += "</body></html>\n";
 
   server.send(200, "text/html", s);
