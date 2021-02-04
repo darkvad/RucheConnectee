@@ -1,6 +1,7 @@
+![](https://github.com/darkvad/RucheConnectee/blob/master/images/beeconnect.png)
 :warning: Attention il s'agit d'un travail en cours :exclamation:
 
-# Ruches connectées ![](https://github.com/darkvad/RucheConnectee/blob/master/images/beeconnect.png)
+# Ruches connectées 
 
 ![](https://github.com/darkvad/RucheConnectee/blob/master/hardware/montage_red.jpg)
 
