@@ -82,10 +82,10 @@ void ttn_register(void (*callback)(uint8_t message));
 // General
 // -----------------------------------------------------------------------------
 
-#define I2C_SDA            21
-#define I2C_SCL            22
-#define LED_PIN            25
-#define RELAIS_PIN         14    // confirmed pin 14 works with board
+#define I2C_SDA            21   // idem Heltec
+#define I2C_SCL            22   // idem Heltec
+#define LED_PIN            25   // idem Heltec
+#define RELAIS_PIN         14    // confirmed pin 14 works with board - comment for Heltec
 
 // -----------------------------------------------------------------------------
 // OLED
@@ -100,17 +100,17 @@ void ttn_register(void (*callback)(uint8_t message));
 #define BMP280_ADDRESS 0x76
 #define LOCAL_ALTITUDE 500.0
 // -----------------------------------------------------------------------------
-// LoRa SPI
+// LoRa SPI TTGO Lora32 V2
 // -----------------------------------------------------------------------------
 
-#define SCK_GPIO        5
-#define MISO_GPIO       19
-#define MOSI_GPIO       27
-#define NSS_GPIO        18
-#define RESET_GPIO      23
-#define DIO0_GPIO       26
-#define DIO1_GPIO       33
-#define DIO2_GPIO       32
+#define SCK_GPIO        5  // idem Heltec
+#define MISO_GPIO       19 // idem Heltec
+#define MOSI_GPIO       27 // idem Heltec
+#define NSS_GPIO        18 // idem Heltec
+#define RESET_GPIO      23 // 14 pour Heltec
+#define DIO0_GPIO       26 // idem Heltec
+#define DIO1_GPIO       33 // 35 pour Heltec
+#define DIO2_GPIO       32 // 34 pour Heltec
 
 // -----------------------------------------------------------------------------
 // AXP192 (Rev1-specific options)
@@ -120,7 +120,7 @@ void ttn_register(void (*callback)(uint8_t message));
 #define PMU_IRQ               35
 
 // BATTERY
-#define BATTERY_PIN 35
+#define BATTERY_PIN 35  // existe pas sur Heltec et utilisé par Lora, donc à commenter
 
 // -----------------------------------------------------------------------------
 // ONEWIRE DS18B20 Sensors
@@ -128,7 +128,7 @@ void ttn_register(void (*callback)(uint8_t message));
 #define NB_DS18B20 2
 
 // Data wire is connected to GPIO15
-#define ONE_WIRE_BUS 15
+#define ONE_WIRE_BUS 15  // Heltec utilise ce pin pour OLED ...
 
 // Addresses of the DS18B20 sensors
 #define TEMP_SENSOR_1 {0x28, 0xBB, 0x2C, 0xCE, 0x38, 0x20, 0x01, 0x70}
