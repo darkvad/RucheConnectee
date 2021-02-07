@@ -85,7 +85,7 @@ void ttn_register(void (*callback)(uint8_t message));
 #define I2C_SDA            21   // idem Heltec
 #define I2C_SCL            22   // idem Heltec
 #define LED_PIN            25   // idem Heltec
-#define RELAIS_PIN         14    // confirmed pin 14 works with board - comment for Heltec
+//#define RELAIS_PIN         14    // confirmed pin 14 works with board - comment for Heltec
 
 // -----------------------------------------------------------------------------
 // OLED

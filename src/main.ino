@@ -153,6 +153,7 @@ void callback(uint8_t message) {
               // downlink (turn relais on when received payload = 1)
               Serial.println("received downlink");
               Serial.println(LMIC.frame[LMIC.dataBeg]);
+#ifdef RELAIS_PIN
               if (LMIC.frame[LMIC.dataBeg] == 1)
               {
                 digitalWrite(RELAIS_PIN, HIGH);
@@ -166,6 +167,7 @@ void callback(uint8_t message) {
                 relais_on = false;
               }
             }
+#endif
     sleep();
   }
 
@@ -289,8 +291,9 @@ Serial.println(atoi(sleepValue));
   pinMode(LED_PIN, OUTPUT);
 
 // SET RELAIS_PIN TO OUTPUT
+#ifdef RELAIS_PIN
   pinMode(RELAIS_PIN, OUTPUT);
-
+#endif
 // SET BATTERY PIN TO INPUT
 pinMode(BATTERY_PIN, INPUT);
 analogReadResolution(10);
