@@ -26,8 +26,9 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include "function.h"
+#include "parametres.h"
 
-char temp_char[32]; // used to sprintf for Serial output
+//char temp_char[32]; // used to sprintf for Serial output
 DeviceAddress mySensors[3] = {TEMP_SENSOR_1, TEMP_SENSOR_2, TEMP_SENSOR_3};
 //DeviceAddress sensor2 = TEMP_SENSOR_2;
 //DeviceAddress sensor3 = TEMP_SENSOR_3;
@@ -81,8 +82,8 @@ void ds18b20_setup(void){
 
 void getTemp(uint8_t txBuffer[21]) {
 
-  float temperature;
-  uint16_t payloadTemp;
+  //float temperature;
+  //uint16_t payloadTemp;
 
   Serial.print("Requesting temperatures...");
   sensors.requestTemperatures(); // Send the command to get temperatures
@@ -92,8 +93,8 @@ void getTemp(uint8_t txBuffer[21]) {
 
     float temperature = sensors.getTempC(mySensors[i]);
 
-    sprintf(temp_char, "Temperature: %f", temperature);
-    Serial.println(temp_char);
+    sprintf(print_buf, "Temperature: %f", temperature);
+    Serial.println(print_buf);
 
       // adjust for the f2sflt16 range (-1 to 1)
     temperature = temperature / 100;

@@ -34,4 +34,6 @@ char sleepValue[STRING_LEN];
 char offsetValue[NUMBER_LEN];
 char calibrationValue[NUMBER_LEN];
 
+char print_buf[80];
+
 #endif

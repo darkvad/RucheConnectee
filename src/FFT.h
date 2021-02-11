@@ -32,16 +32,16 @@
 #include <math.h>
 #include <complex.h>
 
-#define FFT_N 4096 // Must be a power of 2
+//#define FFT_N 4096 // Must be a power of 2
 //#define TOTAL_TIME (0.09216092161) //The time in which data was captured. This is equal to FFT_N/sampling_freq
-#define TOTAL_TIME (0.18432184322) //The time in which data was captured. This is equal to FFT_N/sampling_freq
+//#define TOTAL_TIME (0.18432184322) //The time in which data was captured. This is equal to FFT_N/sampling_freq
 
 
-float fft_input[FFT_N];
-float fft_output[FFT_N];
+//float fft_input[FFT_N];
+//float fft_output[FFT_N];
 
-float max_magnitude = 0;
-float fundamental_freq = 0;
+//float max_magnitude = 0;
+//float fundamental_freq = 0;
 
 
 typedef enum

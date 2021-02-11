@@ -37,13 +37,10 @@
 #include "style.h"
 
 // -- Initial name of the Thing. Used e.g. as SSID of the own Access Point.
-const char thingName[] = "BeeConn";
+static const char PROGMEM thingName[] = "BeeConn";
 
 // -- Initial password to connect to the Thing, when it creates an own Access Point.
-const char wifiInitialApPassword[] = "bzzzzz";
-
-#define STRING_LEN 128
-#define NUMBER_LEN 32
+static const char PROGMEM wifiInitialApPassword[] = "bzzzzz";
 
 // -- Configuration specific key. The value should be modified if config structure was changed.
 #define CONFIG_VERSION "conf_01"
@@ -107,9 +104,9 @@ IotWebConfNumberParameter floatParam = IotWebConfNumberParameter("Float param", 
 IotWebConfCheckboxParameter checkboxParam = IotWebConfCheckboxParameter("Check param", "checkParam", checkboxParamValue, STRING_LEN,  true);
 IotWebConfSelectParameter chooserParam = IotWebConfSelectParameter("Choose param", "chooseParam", chooserParamValue, STRING_LEN, (char*)chooserValues, (char*)chooserNames, sizeof(chooserValues) / STRING_LEN, STRING_LEN);
 */
-int res = sprintf(defaultValueSendInterval,"%lu",SEND_INTERVAL);
-int res1 = sprintf(defaultValueAltitude,"%lu",LOCAL_ALTITUDE);
-int res2 = sprintf(defaultValueObjectID,"%lu",defaultUintValueObjectID);
+int res = sprintf(defaultValueSendInterval,"%u",SEND_INTERVAL);
+int res1 = sprintf(defaultValueAltitude,"%.0f",LOCAL_ALTITUDE);
+int res2 = sprintf(defaultValueObjectID,"%u",defaultUintValueObjectID);
 
 IotWebConfParameterGroup general = IotWebConfParameterGroup("general", "Param&egrave;tres G&eacute;n&eacute;raux");
 IotWebConfNumberParameter singleChannelGateway = IotWebConfNumberParameter("Num&eacute;ro de canal si passerelle monocanal", "singleChannelGateway", singleChannelGatewayValue, NUMBER_LEN, itoa(SINGLE_CHANNEL_GATEWAY,defaultValueSingleChannelgateway,10), "0..8", "min='0' max='8' step='1'");
@@ -131,13 +128,15 @@ IotWebConfTextParameter tempSensor3 = IotWebConfTextParameter("Id capteur 3", "t
 IotWebConfNumberParameter offset = IotWebConfNumberParameter("Offset balance", "offset", offsetValue, NUMBER_LEN, "-8301", "...", "min='-50000' max='50000' step='0.01'");
 IotWebConfNumberParameter calibration = IotWebConfNumberParameter("Calibration balance", "calibration", calibrationValue, NUMBER_LEN, "-52.83", "...", "min='-50000' max='50000' step='0.01'");
 
+String s;
 
 uint8_t* convertchartouint8array(char chaine[],uint8_t len,uint8_t* resultat) {
   char temp[3];
    for (int i = 0; i < len ; i++) {
      temp[0] = chaine[2*i];
      temp[1] = chaine[(2*i)+1];
-     temp[2] = NULL;
+//     temp[2] = NULL;
+     temp[2] = 0x00;
      resultat[i] = (uint8_t)strtol(temp, NULL,16);
    }
 
@@ -255,7 +254,7 @@ void handleOneWire()
   }
   char device[17];
   findDevices(device,ONE_WIRE_BUS);
-  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
   s += "<title>Identification DS18B20</title><style>";
   s += style;
   s += "</style></head><body>";
@@ -281,7 +280,7 @@ void handleBalance()
     // -- Captive portal request were already served.
     return;
   }
-  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
   s += "<title>R&eacute;glages Balance</title><style>";
   s += style;
   s += "</style></head><body>";
@@ -312,7 +311,7 @@ void handleTare()
   }
   float valtare;
   valtare = procTare();
-  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
   s += "<title>Tare Balance</title><style>";
   s += style;
   s += "</style></head><body>";
@@ -344,7 +343,7 @@ void handleCalibrate()
 
   float valcal;
   valcal = procCalibration(server.arg("poids").toInt());
-  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
   s += "<title>Calibration Balance</title><style>";
   s += style;
   s += "</style></head><body>";
@@ -371,7 +370,7 @@ void handleRoot()
     // -- Captive portal request were already served.
     return;
   }
-  String s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
+  s = "<!DOCTYPE html><html lang=\"en\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1, user-scalable=no\"/>";
   s += "<title>Param&egrave;tre BeeConnect</title><style>";
   s += String(FPSTR(style));
   s += "</style></head><body>";

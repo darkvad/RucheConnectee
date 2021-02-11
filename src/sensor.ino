@@ -28,15 +28,16 @@ uint32_t pressure_bme;
 uint32_t temperature_bme;
 float loc_altitude;
 #endif
-
+/*
 union {
   uint32_t x;
   byte dataArray[4];
 } myCount;
+*/
 
 #ifdef BMP280_ADDRESS
 
-char bme_char[32]; // used to sprintf for Serial output
+//char bme_char[32]; // used to sprintf for Serial output
 
 #define SEALEVELPRESSURE_HPA (1013.25)
 Adafruit_BME280 bme; // I2C
@@ -77,7 +78,7 @@ float temperature() {
 
 void buildPacket(uint8_t txBuffer[21])
 {
-  char buffer[40];
+  //char buffer[40];
 
   
   //
@@ -108,11 +109,11 @@ if (bmp280_found) {
   //float humidity = random(1,100); //Alain bme.readHumidity();
   float humidity = bme.readHumidity();
   
-  sprintf(bme_char, "Humidity: %f", humidity);
-  Serial.println(bme_char);
+  sprintf(print_buf, "Humidity: %f", humidity);
+  Serial.println(print_buf);
   
-  snprintf(buffer, sizeof(buffer), "Humidity: %10.1f\n", humidity);
-  screen_print(buffer);
+  snprintf(print_buf, sizeof(print_buf), "Humidity: %10.1f\n", humidity);
+  screen_print(print_buf);
 
   // adjust for the f2sflt16 range (-1 to 1)
   humidity = humidity / 100;
@@ -139,11 +140,11 @@ if (bmp280_found) {
   //sprintf(bme_char, "correction: %f", correction);
   //Serial.println(bme_char);
   float pressure = bme.readPressure() + (loc_altitude / 8.3f * 100.0f);
-  sprintf(bme_char, "Pressure: %f", pressure / 100);
-  Serial.println(bme_char);
+  sprintf(print_buf, "Pressure: %f", pressure / 100);
+  Serial.println(print_buf);
 
-  snprintf(buffer, sizeof(buffer), "Pressure: %10.1f\n", pressure / 100);
-  screen_print(buffer);
+  snprintf(print_buf, sizeof(print_buf), "Pressure: %10.1f\n", pressure / 100);
+  screen_print(print_buf);
 
   // adjust for the f2sflt16 range (-1 to 1)
   pressure = pressure / 10000000;
@@ -166,11 +167,11 @@ if (bmp280_found) {
   //float temperature =random(-30,60); //Alain  bme.readTemperature();
   float temperature = bme.readTemperature();
 
-  sprintf(bme_char, "Temperature: %f", temperature);
-  Serial.println(bme_char);
+  sprintf(print_buf, "Temperature: %f", temperature);
+  Serial.println(print_buf);
 
-  snprintf(buffer, sizeof(buffer), "Temperature: %10.1f\n", temperature);
-  screen_print(buffer);
+  snprintf(print_buf, sizeof(print_buf), "Temperature: %10.1f\n", temperature);
+  screen_print(print_buf);
 
   // adjust for the f2sflt16 range (-1 to 1)
   temperature = temperature / 100;
@@ -209,11 +210,11 @@ if (atoi(nb_DS18B20Value) > 0) {
 
   float weight = getWeight();
 
-  sprintf(bme_char, "poids: %f", weight);
-  Serial.println(bme_char);
+  sprintf(print_buf, "poids: %f", weight);
+  Serial.println(print_buf);
 
-  snprintf(buffer, sizeof(buffer), "Poids: %10.1f\n", weight);
-  screen_print(buffer);
+  snprintf(print_buf, sizeof(print_buf), "Poids: %10.1f\n", weight);
+  screen_print(print_buf);
 
   // adjust for the f2sflt16 range (-1 to 1)
   weight = weight / 1000000;
@@ -229,11 +230,11 @@ if (atoi(nb_DS18B20Value) > 0) {
   txBuffer[18] = weightHigh;
 
   float vbat = roundf(1000.0 * 2.0 * (3.6 / 1024) * analogRead(BATTERY_PIN));
-  sprintf(bme_char, "batterie: %f", vbat);
-  Serial.println(bme_char);
+  sprintf(print_buf, "batterie: %f", vbat);
+  Serial.println(print_buf);
 
-  snprintf(buffer, sizeof(buffer), "Bat: %10.0f\n", vbat);
-  screen_print(buffer);
+  snprintf(print_buf, sizeof(print_buf), "Bat: %10.0f\n", vbat);
+  screen_print(print_buf);
 
   // adjust for the f2sflt16 range (-1 to 1)
   vbat = vbat / 10000;
@@ -253,6 +254,7 @@ if (atoi(nb_DS18B20Value) > 0) {
   work_finished = false;
   frequency_setup();
   //while(!work_finished);
+#if ADCMIKE == 1
   Serial.println(work_finished);
   delay(2000);
   Serial.println(work_finished);
@@ -278,7 +280,26 @@ if (atoi(nb_DS18B20Value) > 0) {
   txBuffer[8] = frequenceHigh;
   txBuffer[9] = magnitudeLow;
   txBuffer[10] = magnitudeHigh;
+#endif
+#if I2SMIKE == 1
+  I2S_Audio_Read();
+  // adjust for the f2sflt16 range (-1 to 1)
+  fundamental_freq = fundamental_freq / 100000;
+  max_magnitude = max_magnitude / 1000000;
 
+  // float -> int
+  uint16_t payloadFrequence = LMIC_f2sflt16(fundamental_freq);
+  uint16_t payloadMagnitude = LMIC_f2sflt16(max_magnitude);
 
+  // int -> bytes
+  byte frequenceLow = lowByte(payloadFrequence);
+  byte frequenceHigh = highByte(payloadFrequence);
+  byte magnitudeLow = lowByte(payloadMagnitude);
+  byte magnitudeHigh = highByte(payloadMagnitude);
 
+  txBuffer[7] = frequenceLow;
+  txBuffer[8] = frequenceHigh;
+  txBuffer[9] = magnitudeLow;
+  txBuffer[10] = magnitudeHigh;
+#endif
 }

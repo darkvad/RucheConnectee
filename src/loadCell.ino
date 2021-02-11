@@ -83,9 +83,9 @@ float getWeight() {
   result = std::max(0.0f,result);
   return result;
 }
-
+/*
 void load_loop() {
-  static boolean newDataReady = 0;
+  //static boolean newDataReady = 0;
   const int serialPrintInterval = 0; //increase value to slow down serial print activity
 
 
@@ -108,3 +108,4 @@ void load_loop() {
   Serial.println(LoadCell.get_offset());
 
 }
+*/

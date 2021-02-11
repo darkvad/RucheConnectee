@@ -56,7 +56,7 @@ static uint8_t txBuffer[21];
 // SEND_INTERVAL in variable for changing it in web conf
 uint32_t sendInterval;
 
-char tmpbuf[20];
+//char tmpbuf[20];
 
 // -----------------------------------------------------------------------------
 // Application
@@ -94,9 +94,9 @@ void sleep() {
 #if SLEEP_BETWEEN_MESSAGES == 1
   if (mode_sleep) {
     // Show the going to sleep message on the screen
-    char buffer[20];
-    snprintf(buffer, sizeof(buffer), "Sleeping in %3.1fs\n", (MESSAGE_TO_SLEEP_DELAY / 1000.0));
-    screen_print(buffer);
+    //char buffer[20];
+    snprintf(print_buf, sizeof(print_buf), "Sleeping in %3.1fs\n", (MESSAGE_TO_SLEEP_DELAY / 1000.0));
+    screen_print(print_buf);
 
     // Wait for MESSAGE_TO_SLEEP_DELAY millis to sleep
     delay(MESSAGE_TO_SLEEP_DELAY);
@@ -153,21 +153,23 @@ void callback(uint8_t message) {
               // downlink (turn relais on when received payload = 1)
               Serial.println("received downlink");
               Serial.println(LMIC.frame[LMIC.dataBeg]);
-#ifdef RELAIS_PIN
               if (LMIC.frame[LMIC.dataBeg] == 1)
               {
+#ifdef RELAIS_PIN
                 digitalWrite(RELAIS_PIN, HIGH);
+#endif
                 Serial.println("RELAIS ON");
                 relais_on = true;
               }
               else
               {
+#ifdef RELAIS_PIN
                 digitalWrite(RELAIS_PIN, LOW);
+#endif
                 Serial.println("RELAIS OFF");
                 relais_on = false;
               }
             }
-#endif
     sleep();
   }
 
@@ -179,16 +181,16 @@ void callback(uint8_t message) {
     uint8_t data[len];
     ttn_response(data, len);
 
-    char buffer[6];
+    //char buffer[6];
     for (uint8_t i = 0; i < len; i++) {
-      snprintf(buffer, sizeof(buffer), "%02X", data[i]);
-      screen_print(buffer);
+      snprintf(print_buf, sizeof(print_buf), "%02X", data[i]);
+      screen_print(print_buf);
     }
     screen_print("\n");
   }
 }
 
-uint32_t get_count() {
+uint32_t get_count(void) {
   return count;
 }
 
@@ -306,7 +308,7 @@ if (bmp280_found) {
 }
 #endif
 
-#ifdef NB_DS18B20 > 0
+#if NB_DS18B20 > 0
 if (atoi(nb_DS18B20Value) > 0) {
   ds18b20_setup();
 }
@@ -340,8 +342,9 @@ sendInterval = strtoul(sendIntervalValue,NULL,10);
   ttn_sf(LORAWAN_SF);
   ttn_adr(LORAWAN_ADR);
 
+#if ADCMIKE == 1
   xTaskCreate(complexHandler, "Handler Task", 8192, NULL, 1, &complexHandlerTask);
-
+#endif
 
 }
 
@@ -381,13 +384,13 @@ void loop() {
     Serial.printf("Attente %d secondes pour config wifi", (AP_CONFIG_WAIT/1000));
     static uint32_t debut = millis();
     static uint32_t reste = AP_CONFIG_WAIT;
-    char scrbuf[20];
-    sprintf(scrbuf,"Reste %u s\n",(unsigned long)round(reste/1000));
-    screen_print(scrbuf);
+    //char scrbuf[20];
+    sprintf(print_buf,"Reste %lu s\n",(unsigned long)round(reste/1000));
+    screen_print(print_buf);
     while (millis() - debut < AP_CONFIG_WAIT) {
       reste = (AP_CONFIG_WAIT) - (millis() - debut);
-      sprintf(scrbuf,"Reste %u s\n",(unsigned long)round(reste/1000));
-      screen_print(scrbuf);
+      sprintf(print_buf,"Reste %lu s\n",(unsigned long)round(reste/1000));
+      screen_print(print_buf);
       iotwebconf_loop();
     }
   }
@@ -399,11 +402,11 @@ void loop() {
 //sendInterval = 30000;
 // Send every SEND_INTERVAL millis
   static uint32_t last = 0;
-  static bool first = true;
+//  static bool first = true;
 //  if (0 == last || millis() - last > SEND_INTERVAL) {
   if (0 == last || millis() - last > sendInterval) {
       last = millis();
-      first = false;
+//      first = false;
       Serial.println("TRANSMITTING");
       send();
   }

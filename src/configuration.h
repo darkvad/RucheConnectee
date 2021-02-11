@@ -128,7 +128,7 @@ void ttn_register(void (*callback)(uint8_t message));
 #define NB_DS18B20 2
 
 // Data wire is connected to GPIO15
-#define ONE_WIRE_BUS 15  // Heltec utilise ce pin pour OLED ...
+#define ONE_WIRE_BUS 15  // Heltec utilise ce pin pour OLED ... pour laisser le 15 a I2S
 
 // Addresses of the DS18B20 sensors
 #define TEMP_SENSOR_1 {0x28, 0xBB, 0x2C, 0xCE, 0x38, 0x20, 0x01, 0x70}
